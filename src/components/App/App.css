@@ -1,0 +1,88 @@
+.page {
+    padding: 20px 100px 0;
+}
+
+.search {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.search__input {
+    width: 450px;
+}
+
+.search__picker {
+    width: 60%;
+}
+
+.table {
+    margin-top: 25px;
+}
+
+.form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.form__item {
+    margin-bottom: 10px;
+}
+
+.form__input {
+   width: 150%;
+}
+
+.form__add-button {
+   float: right;
+}
+
+.card {
+    margin-bottom: 10px;
+}
+
+.card_form {
+    width: 150%;
+}
+
+.card:last-child {
+    margin-bottom: 0;
+}
+
+.card__content {
+   display: flex;
+    justify-content: space-between;
+
+}
+
+.card__paragraph {
+    margin: 0;
+}
+
+.delete-button {
+    border: 0;
+    background-color: inherit;
+    color: #ff0303;
+    transition: opacity 0.5s ease;
+}
+
+.delete-button:hover {
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.select-button {
+    border: 0;
+    background-color: inherit;
+    color: #1677ff;
+    transition: opacity 0.5s ease;
+}
+
+.select-button:hover {
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.drawer__divider {
+    margin-top: 80px;
+}
