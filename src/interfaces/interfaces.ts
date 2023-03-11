@@ -6,3 +6,7 @@ export interface DataType {
     edit: string;
     delete: string;
 }
+
+export interface INumeralRow {
+    title?: string;
+}

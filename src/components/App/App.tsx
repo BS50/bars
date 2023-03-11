@@ -1,4 +1,5 @@
 import React, {FC, useState} from 'react';
+import {nanoid} from "nanoid";
 import './App.css'
 import {
     Input,
@@ -20,7 +21,7 @@ import type { DatePickerProps } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {ColumnsType} from "antd/es/table";
-import {DataType} from "../../interfaces/interfaces";
+import {DataType, INumeralRow} from "../../interfaces/interfaces";
 import _Form from "../Form/Form";
 
 
@@ -36,7 +37,7 @@ const App: FC = () => {
 
     const { confirm } = Modal;
 
-    const showDeleteConfirm = () => {
+    const showDeleteConfirm = (rowItem: DataType) => {
         confirm({
             title: 'Вы уверены что хотите удалить данную запись?',
             icon: <ExclamationCircleFilled />,
@@ -45,31 +46,45 @@ const App: FC = () => {
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-                console.log('OK');
+                setRows(rows.filter(item => item.key !== rowItem.key))
             },
-            onCancel() {
-                console.log('Cancel');
-            },
+            // onCancel() {
+            //     console.log('Cancel');
+            // },
         });
     };
 
-    const [listNumeralRow, setListNumeralRow] = useState<any>([])
 
-    const getListNumeralRow = (rowItem:any) => {
+    const [currentRowName, setCurrentRowName] = useState('')
+    const [currentRowDate, setCurrentRowDate] = useState('')
+    const [currentListNumeralRow, setCurrentListNumeralRow] = useState<INumeralRow[]>([])
 
-        //[один, два, три]
-        let listNumeral: object[] = []
+
+    const getValueCurrentRow = (rowItem:DataType) => {
+        console.log(rowItem)
+        let listNumeral: INumeralRow[] = []
         rowItem.list.split(', ').forEach((elem: string) => {
-            const objNumber = {}
-
-            // @ts-ignore
+            const objNumber:INumeralRow = {}
             objNumber.title = elem
-
             listNumeral.push(objNumber)
         })
+        setCurrentRowName(rowItem.name)
+        setCurrentRowDate(convertData(rowItem.date))
 
-        // @ts-ignore
-        setListNumeralRow(listNumeral)
+        setCurrentListNumeralRow(listNumeral)
+    }
+
+
+    const convertData = (date:string):string => {
+        let dateList = date.split('.')
+        dateList = [dateList[1], dateList[0], dateList[2]]
+        return dateList.join('/')
+    }
+
+    const getValueNewRow = () => {
+        setCurrentRowName('')
+        setCurrentRowDate(Date())
+
     }
 
 
@@ -98,7 +113,7 @@ const App: FC = () => {
             render: (_, rowItem) => (
                 <a onClick={() => {
                     showDrawer()
-                    getListNumeralRow(rowItem)
+                    getValueCurrentRow(rowItem)
                 }}>
                     Редактировать
                 </a>
@@ -109,8 +124,8 @@ const App: FC = () => {
             dataIndex: 'delete',
             key: 'delete',
             align: 'center',
-            render: (_, record) => (
-                <button onClick={showDeleteConfirm} className="delete-button">Удалить</button>
+            render: (_, rowItem) => (
+                <button onClick={() => showDeleteConfirm(rowItem)} className="delete-button">Удалить</button>
             ),
         },
         // {
@@ -145,9 +160,8 @@ const App: FC = () => {
         // },
     ];
 
-    const [rows, setRows] = useState(
+    const [rows, setRows] = useState<DataType[]>(
 
-    // const rows: DataType[] =
         [
         {
             key: '1',
@@ -189,6 +203,7 @@ const App: FC = () => {
 
     };
     const onClose = () => {
+        setCurrentListNumeralRow([])
         setOpen(false);
     };
 
@@ -211,7 +226,36 @@ const App: FC = () => {
         }
     ];
 
-    console.log(listNumeralRow)
+
+
+    const onFinish = (event:any) => {
+
+        // @ts-ignore
+        const date = Date(event.date.$d)
+
+        const name:string = event.name
+
+        const list = currentListNumeralRow.map(item => item.title)
+
+        const key = nanoid()
+
+        const row: DataType = {
+            key,
+            name,
+            date,
+            list: list.join(', '),
+            edit: 'редактировать',
+            delete: 'удалить'
+        }
+
+        setRows((oldData: DataType[]): DataType[] => {
+            return [...oldData, row]
+        })
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
 
 
     return (
@@ -228,7 +272,10 @@ const App: FC = () => {
             />
             <Button type="primary">Найти</Button>
             <Button type="primary" ghost>Очистить</Button>
-            <Button type="primary" ghost onClick={showDrawer}>Добавить</Button>
+            <Button type="primary" ghost onClick={ () => {
+                showDrawer()
+                getValueNewRow()
+            }}>Добавить</Button>
 
         </Space>
         <Table columns={columns}
@@ -237,8 +284,8 @@ const App: FC = () => {
                pagination={false}
                className="table"
         />
-        <Drawer title="Новый элемент" placement="right" onClose={onClose} open={open} width="45%">
-            <_Form listNumeralRow={listNumeralRow}/>
+        <Drawer title="Новый элемент" placement="right" onClose={onClose} open={open} width="45%" destroyOnClose={true}>
+            <_Form currentListNumeralRow={currentListNumeralRow} currentRowName={currentRowName} currentRowDate={currentRowDate} onFinish={onFinish} onFinishFailed={onFinishFailed}/>
 
 
         </Drawer>

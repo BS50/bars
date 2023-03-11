@@ -1,42 +1,19 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Button, Card, DatePicker, DatePickerProps, Divider, Form, Input, List, Modal} from "antd";
-import events from "node:events";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import moment from 'moment';
 
 dayjs.extend(customParseFormat);
 const dateFormat = 'DD.MM.YYYY';
-const customFormat: DatePickerProps['format'] = (value) =>
-    `${value.format(dateFormat)}`;
+// const customFormat: DatePickerProps['format'] = (value) =>
+//     `${value.format(dateFormat)}`;
 
 
 // @ts-ignore
-const _Form = ({ listNumeralRow }) => {
+const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinishFailed, onFinish }) => {
 
 
-    const onFinish = (event: events) => {
-
-        // @ts-ignore
-
-        const date = Date(event.date.$d)
-        // @ts-ignore
-        const name = event.name
-        const row = {
-            key: 3,
-            name,
-            date,
-            list: 'два, пять',
-            edit: 'редактировать',
-            delete: 'удалить'
-        }
-        // @ts-ignore
-        setData((oldData) => {
-            return [...oldData, row]
-        })
-    };
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +31,13 @@ const _Form = ({ listNumeralRow }) => {
     };
 
 
+    const currentDate = {
+        date: dayjs(new Date(currentRowDate)),
+        name: currentRowName
+    };
+
+
+
 
     return (
         <Form
@@ -61,11 +45,13 @@ const _Form = ({ listNumeralRow }) => {
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             layout="vertical"
-            initialValues={{ remember: true }}
+            // initialValues={{ remember: false }}
+            initialValues={currentDate}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
             className="form"
+            // fields={[{ name: "name", value: currentRowName }]}
 
         >
             <Form.Item
@@ -73,8 +59,9 @@ const _Form = ({ listNumeralRow }) => {
                 name="name"
                 rules={[{ required: true, message: 'Введите название строки' }]}
                 className="form__item"
+
             >
-                <Input className="form__input" />
+                <Input className="form__input"/>
             </Form.Item>
 
             <Form.Item
@@ -84,16 +71,16 @@ const _Form = ({ listNumeralRow }) => {
                 className="form__item"
             >
                 {/*<DatePicker onChange={onChange} className="search__picker" />*/}
-                <DatePicker format={customFormat} />
+                <DatePicker format={dateFormat} />
             </Form.Item>
             <Form.Item
                 label="Список"
                 name="list"
-                rules={[{ required: true, message: 'Добавьте число' }]}
+                rules={[{ message: 'Добавьте число' }]}
                 className="form__item"
             >
                 <List
-                    dataSource={listNumeralRow}
+                    dataSource={currentListNumeralRow}
                     split={false}
                     renderItem={(item: any) => (
                         <List.Item>
