@@ -21,6 +21,9 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {ColumnsType} from "antd/es/table";
 import {DataType} from "../../interfaces/interfaces";
+import _Form from "../Form/Form";
+
+
 
 dayjs.extend(customParseFormat);
 const { RangePicker } = DatePicker;
@@ -50,6 +53,25 @@ const App: FC = () => {
         });
     };
 
+    const [listNumeralRow, setListNumeralRow] = useState<any>([])
+
+    const getListNumeralRow = (rowItem:any) => {
+
+        //[один, два, три]
+        let listNumeral: object[] = []
+        rowItem.list.split(', ').forEach((elem: string) => {
+            const objNumber = {}
+
+            // @ts-ignore
+            objNumber.title = elem
+
+            listNumeral.push(objNumber)
+        })
+
+        // @ts-ignore
+        setListNumeralRow(listNumeral)
+    }
+
 
     const columns: ColumnsType<DataType> = [
         {
@@ -73,8 +95,13 @@ const App: FC = () => {
             dataIndex: 'edit',
             key: 'edit',
             align: 'center',
-            render: (_, record) => (
-                <a onClick={showDrawer}>Редактировать</a>
+            render: (_, rowItem) => (
+                <a onClick={() => {
+                    showDrawer()
+                    getListNumeralRow(rowItem)
+                }}>
+                    Редактировать
+                </a>
             ),
         },
         {
@@ -117,7 +144,11 @@ const App: FC = () => {
         //   ),
         // },
     ];
-    const data: DataType[] = [
+
+    const [rows, setRows] = useState(
+
+    // const rows: DataType[] =
+        [
         {
             key: '1',
             name: 'Первый',
@@ -148,47 +179,22 @@ const App: FC = () => {
         //   address: 'Sydney No. 1 Lake Park',
         //   tags: ['cool', 'teacher'],
         // },
-    ];
-
-
-
+    ]
+    )
 
     const [open, setOpen] = useState(false);
     const showDrawer = () => {
         setOpen(true);
+
+
     };
     const onClose = () => {
         setOpen(false);
     };
 
-
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
-    };
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
-
-
     const onChange: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
-
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
 
     const dates = [
         {
@@ -204,6 +210,9 @@ const App: FC = () => {
             delete: 'Удалить'
         }
     ];
+
+    console.log(listNumeralRow)
+
 
     return (
     <div className="page">
@@ -223,91 +232,14 @@ const App: FC = () => {
 
         </Space>
         <Table columns={columns}
-               dataSource={data}
+               dataSource={rows}
                bordered
                pagination={false}
                className="table"
         />
         <Drawer title="Новый элемент" placement="right" onClose={onClose} open={open} width="45%">
+            <_Form listNumeralRow={listNumeralRow}/>
 
-            <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                layout="vertical"
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-                className="form"
-            >
-                <Form.Item
-                    label="Название"
-                    name="name"
-                    rules={[{ required: true, message: 'Введите название строки' }]}
-                    className="form__item"
-                >
-                    <Input className="form__input"  />
-                </Form.Item>
-
-                <Form.Item
-                    label="Дата"
-                    name="date"
-                    rules={[{ required: true, message: 'Введите название дату' }]}
-                    className="form__item"
-                >
-                    {/*<DatePicker onChange={onChange} className="search__picker" />*/}
-                    <DatePicker defaultValue={dayjs('01.03.2023', dateFormat)} format={customFormat} />
-                </Form.Item>
-                <Form.Item
-                    label="Список"
-                    name="list"
-                    rules={[{ required: true, message: 'Добавьте число' }]}
-                    className="form__item"
-                >
-                    <Card size={"small"} className="card card_form">
-                        <div className={"card__content"}>
-                            <p className={"card__paragraph"}>Card content</p>
-                            <button className={"delete-button"}>Удалить</button>
-                        </div>
-                    </Card>
-
-                </Form.Item>
-
-                <Button type="primary" ghost onClick={showModal} className="form__add-button">
-                    Добавить
-                </Button>
-
-                <Divider className="drawer__divider" />
-
-
-                <Modal title="Выбор элемента для списка" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={800} footer={null} bodyStyle={{height: "650px"}}>
-                    <Card size={"small"} className="card">
-                        <div className={"card__content"}>
-                            <p className={"card__paragraph"}>Пять</p>
-                            <button className={"select-button"}>Выбрать</button>
-                        </div>
-                    </Card>
-
-
-
-                    <Button type="primary" ghost onClick={showModal} className="form__add-button">
-                        Закрыть
-                    </Button>
-
-
-
-
-                </Modal>
-
-
-
-                <Form.Item >
-                    <Button type="primary" htmlType="submit">
-                        Сохранить
-                    </Button>
-                </Form.Item>
-            </Form>
 
         </Drawer>
     </div>
