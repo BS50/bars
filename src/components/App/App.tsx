@@ -23,6 +23,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {ColumnsType} from "antd/es/table";
 import {DataType, INumeralRow} from "../../interfaces/interfaces";
 import _Form from "../Form/Form";
+import {titleDrawer} from "../../constants/constants";
 
 
 
@@ -37,55 +38,37 @@ const App: FC = () => {
 
     const { confirm } = Modal;
 
-    const showDeleteConfirm = (rowItem: DataType) => {
-        confirm({
-            title: 'Вы уверены что хотите удалить данную запись?',
-            icon: <ExclamationCircleFilled />,
-            // content: 'Some descriptions',
-            okText: 'Yes',
-            okType: 'danger',
-            cancelText: 'No',
-            onOk() {
-                setRows(rows.filter(item => item.key !== rowItem.key))
-            },
-            // onCancel() {
-            //     console.log('Cancel');
-            // },
-        });
-    };
+
 
 
     const [currentRowName, setCurrentRowName] = useState('')
     const [currentRowDate, setCurrentRowDate] = useState('')
     const [currentListNumeralRow, setCurrentListNumeralRow] = useState<INumeralRow[]>([])
+    const [keyEditableRow, setKeyEditableRow] = useState('')
 
+    const [rows, setRows] = useState<DataType[]>(
+        [
+            {
+                key: '1',
+                name: 'Первый',
+                date: '01.03.2023',
+                list: 'раз, два, три, четыре',
+                edit: 'редактировать',
+                delete: 'удалить',
+            },
+            {
+                key: '2',
+                name: 'Пятый',
+                date: '05.03.2021',
+                list: 'раз, два',
+                edit: 'редактировать',
+                delete: 'удалить',
+            }
+        ]
+    )
 
-    const getValueCurrentRow = (rowItem:DataType) => {
-        console.log(rowItem)
-        let listNumeral: INumeralRow[] = []
-        rowItem.list.split(', ').forEach((elem: string) => {
-            const objNumber:INumeralRow = {}
-            objNumber.title = elem
-            listNumeral.push(objNumber)
-        })
-        setCurrentRowName(rowItem.name)
-        setCurrentRowDate(convertData(rowItem.date))
+    const [open, setOpen] = useState(false);
 
-        setCurrentListNumeralRow(listNumeral)
-    }
-
-
-    const convertData = (date:string):string => {
-        let dateList = date.split('.')
-        dateList = [dateList[1], dateList[0], dateList[2]]
-        return dateList.join('/')
-    }
-
-    const getValueNewRow = () => {
-        setCurrentRowName('')
-        setCurrentRowDate(Date())
-
-    }
 
 
     const columns: ColumnsType<DataType> = [
@@ -111,12 +94,12 @@ const App: FC = () => {
             key: 'edit',
             align: 'center',
             render: (_, rowItem) => (
-                <a onClick={() => {
+                <button onClick={() => {
                     showDrawer()
                     getValueCurrentRow(rowItem)
-                }}>
+                }} className="select-button">
                     Редактировать
-                </a>
+                </button>
             ),
         },
         {
@@ -128,84 +111,85 @@ const App: FC = () => {
                 <button onClick={() => showDeleteConfirm(rowItem)} className="delete-button">Удалить</button>
             ),
         },
-        // {
-        //   title: 'Tags',
-        //   key: 'tags',
-        //   dataIndex: 'tags',
-        //   render: (_, { tags }) => (
-        //       <>
-        //         {tags.map((tag) => {
-        //           let color = tag.length > 5 ? 'geekblue' : 'green';
-        //           if (tag === 'loser') {
-        //             color = 'volcano';
-        //           }
-        //           return (
-        //               <Tag color={color} key={tag}>
-        //                 {tag.toUpperCase()}
-        //               </Tag>
-        //           );
-        //         })}
-        //       </>
-        //   ),
-        // },
-        // {
-        //   title: 'Action',
-        //   key: 'action',
-        //   render: (_, record) => (
-        //       <Space size="middle">
-        //         <a>Invite {record.name}</a>
-        //         <a>Delete</a>
-        //       </Space>
-        //   ),
-        // },
     ];
 
-    const [rows, setRows] = useState<DataType[]>(
 
-        [
-        {
-            key: '1',
-            name: 'Первый',
-            date: '01.03.2023',
-            list: 'раз, два, три, четыре',
-            edit: 'редактировать',
-            delete: 'удалить',
-        },
-        {
-            key: '2',
-            name: 'Пятый',
-            date: '05.03.2021',
-            list: 'раз, два',
-            edit: 'редактировать',
-            delete: 'удалить',
-        },
-        // {
-        //   key: '2',
-        //   name: 'Jim Green',
-        //   age: 42,
-        //   address: 'London No. 1 Lake Park',
-        //   tags: ['loser'],
-        // },
-        // {
-        //   key: '3',
-        //   name: 'Joe Black',
-        //   age: 32,
-        //   address: 'Sydney No. 1 Lake Park',
-        //   tags: ['cool', 'teacher'],
-        // },
-    ]
-    )
 
-    const [open, setOpen] = useState(false);
+    const showDeleteConfirm = (rowItem: DataType) => {
+        confirm({
+            title: 'Вы уверены что хотите удалить данную запись?',
+            icon: <ExclamationCircleFilled />,
+            // content: 'Some descriptions',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk() {
+                setRows(rows.filter(item => item.key !== rowItem.key))
+            },
+            // onCancel() {
+            //     console.log('Cancel');
+            // },
+        });
+    };
+
+
+
+    const getValueCurrentRow = (rowItem:DataType) => {
+
+        let listNumeral: INumeralRow[] = []
+        rowItem.list.split(', ').forEach((elem: string) => {
+            const objNumbers:INumeralRow = {}
+            objNumbers.title = elem
+            objNumbers.id = nanoid()
+            listNumeral.push(objNumbers)
+        })
+        setCurrentRowName(rowItem.name)
+        setCurrentRowDate(convertData(rowItem.date))
+        setCurrentListNumeralRow(listNumeral)
+
+        setKeyEditableRow(rowItem.key)
+    }
+
+    const addListNumeralRow = (selectObjNumber:any) => {
+        setCurrentListNumeralRow((oldList) => {
+            return [...oldList, selectObjNumber]
+        })
+    }
+
+   const deleteListNumeralRow = (event:any) => {
+        // event.stopPropagation();
+        event.preventDefault();
+       setCurrentListNumeralRow(
+           currentListNumeralRow.filter(item => item.id !== event.target.id)
+       )
+
+
+
+
+    }
+
+    const convertData = (date: string):string => {
+        let dateList = date.split('.')
+        dateList = [dateList[1], dateList[0], dateList[2]]
+        return dateList.join('.')
+    }
+
+    const getValueNewRow = () => {
+        setCurrentRowName('')
+        setKeyEditableRow('')
+        setCurrentRowDate(Date())
+    }
+
+
+
     const showDrawer = () => {
         setOpen(true);
-
-
     };
     const onClose = () => {
         setCurrentListNumeralRow([])
         setOpen(false);
     };
+
 
     const onChange: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
@@ -228,17 +212,35 @@ const App: FC = () => {
 
 
 
-    const onFinish = (event:any) => {
-
-        // @ts-ignore
-        const date = Date(event.date.$d)
+    const editRowTable = (event:any) => {
 
         const name:string = event.name
-
         const list = currentListNumeralRow.map(item => item.title)
+        // @ts-ignore
+        const date:string = event.date.$d.toLocaleDateString('pt-PT').replace(/\//g, '.')
 
+        rows.forEach((item) => {
+            if (item.key === keyEditableRow) {
+                // @ts-ignore
+                item.name = name
+                // @ts-ignore
+                item.list = list.join(', ')
+                // @ts-ignore
+                item.date = date
+            }
+        })
+        setRows(rows)
+        onClose()
+    }
+
+    const addRowTable = (event:any) => {
+        // @ts-ignore
+        const date = event.date.$d.toLocaleDateString('pt-PT').replace(/\//g, '.')
+        const name:string = event.name
+        const list = currentListNumeralRow.map(item => item.title)
         const key = nanoid()
 
+        // @ts-ignore
         const row: DataType = {
             key,
             name,
@@ -251,13 +253,23 @@ const App: FC = () => {
         setRows((oldData: DataType[]): DataType[] => {
             return [...oldData, row]
         })
+        onClose()
+    }
+
+
+
+    const onFinish = (event:any) => {
+        if (keyEditableRow) {
+            editRowTable(event)
+        } else {
+            addRowTable(event)
+        }
     };
+
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
-
-
     return (
     <div className="page">
         <Space direction="horizontal" className="search" wrap={true}>
@@ -267,12 +279,13 @@ const App: FC = () => {
             />
             <p>Дата:</p>
             <RangePicker
-                defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
+                // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
                 format={customFormat}
             />
             <Button type="primary">Найти</Button>
             <Button type="primary" ghost>Очистить</Button>
-            <Button type="primary" ghost onClick={ () => {
+            <Button type="primary" ghost
+                    onClick={ () => {
                 showDrawer()
                 getValueNewRow()
             }}>Добавить</Button>
@@ -284,8 +297,16 @@ const App: FC = () => {
                pagination={false}
                className="table"
         />
-        <Drawer title="Новый элемент" placement="right" onClose={onClose} open={open} width="45%" destroyOnClose={true}>
-            <_Form currentListNumeralRow={currentListNumeralRow} currentRowName={currentRowName} currentRowDate={currentRowDate} onFinish={onFinish} onFinishFailed={onFinishFailed}/>
+        <Drawer title={keyEditableRow ? titleDrawer.editElement : titleDrawer.newElement} placement="right" onClose={onClose} open={open} width="45%" destroyOnClose={true}>
+            <_Form
+                currentListNumeralRow={currentListNumeralRow}
+                currentRowName={currentRowName}
+                currentRowDate={currentRowDate}
+                addListNumeralRow={addListNumeralRow}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                deleteListNumeralRow={deleteListNumeralRow}
+            />
 
 
         </Drawer>

@@ -59,6 +59,8 @@
     margin: 0;
 }
 
+
+
 .delete-button {
     border: 0;
     background-color: inherit;
@@ -81,6 +83,11 @@
 .select-button:hover {
     opacity: 0.6;
     cursor: pointer;
+}
+
+.list__item {
+    padding: 0;
+    /*margin-bottom: 10px;*/
 }
 
 .drawer__divider {

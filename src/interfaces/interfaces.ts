@@ -1,3 +1,4 @@
+
 export interface DataType {
     key: string;
     name: string;
@@ -9,4 +10,5 @@ export interface DataType {
 
 export interface INumeralRow {
     title?: string;
+    id?: string
 }
