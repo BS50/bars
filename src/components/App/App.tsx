@@ -266,30 +266,101 @@ const App: FC = () => {
         console.log('Failed:', errorInfo);
     };
 
+    const onSearch = (event: any) => {
+        console.log(event)
+    }
 
+
+    const [form] = Form.useForm();
 
     return (
     <div className="page">
-        <Space direction="horizontal" className="search" wrap={true}>
-            <p>Название:</p>
-            <Input
-                className="search__input"
-            />
-            <p>Дата:</p>
-            <RangePicker
-                onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}
-                // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
-                format={customFormat}
-            />
-            <Button type="primary">Найти</Button>
-            <Button type="primary" ghost>Очистить</Button>
-            <Button type="primary" ghost
-                    onClick={ () => {
-                showDrawer()
-                getValueNewRow()
-            }}>Добавить</Button>
+        <Form
+            name="search"
+            labelCol={{ span: 1, offset: 10  }}
+            wrapperCol={{ span: 1, offset: 15 }}
+            layout="inline"
+            onFinish={onSearch}
+            autoComplete="off"
+            form={form}
+            style={{width: "100%", marginBottom: "20px"}}
 
-        </Space>
+
+        >
+            <Form.Item
+                label="Название"
+                name="name"
+                labelCol={{ span: 4, offset: 1 }}
+                wrapperCol={{ span: 15, offset: 0 }}
+                colon={true}
+                style={{width: "43%"}}
+
+            >
+                <Input style={{width: "135%"}}   />
+            </Form.Item>
+            <Form.Item
+                label="Дата"
+                name="dateRange"
+                colon={true}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 15, offset: 1 }}
+                style={{width: "35%"}}
+            >
+                <RangePicker
+                    onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}
+                    // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
+                    format={customFormat}
+                    style={{width: "125%"}}
+                />
+            </Form.Item>
+            <Form.Item
+                labelCol={{ span: 1, offset: 1 }}
+                wrapperCol={{ span: 1, offset: 1 }}
+                // style={{width: "10%"}}
+
+            >
+                <Button type="primary" htmlType="submit">
+                    Найти
+                </Button>
+            </Form.Item>
+            <Form.Item
+                labelCol={{ span: 10 }}
+                wrapperCol={{ span: 15, offset: 1 }}
+            >
+                <Button type="primary" ghost onClick={() => form.resetFields()}>
+                    Очистить
+                </Button>
+
+            </Form.Item>
+        </Form>
+        <Button type="primary" ghost
+                onClick={ () => {
+                    showDrawer()
+                    getValueNewRow()
+                }}>Добавить</Button>
+
+
+
+        {/*<Space direction="horizontal" className="search" wrap={true}>*/}
+        {/*    <p>Название:</p>*/}
+        {/*    <Input*/}
+        {/*        className="search__input"*/}
+        {/*    />*/}
+        {/*    <p>Дата:</p>*/}
+        {/*    <RangePicker*/}
+        {/*        onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}*/}
+        {/*        // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}*/}
+        {/*        format={customFormat}*/}
+        {/*    />*/}
+        {/*    <Button type="primary">Найти</Button>*/}
+        {/*    <Button type="primary" ghost>Очистить</Button>*/}
+        {/*    <Button type="primary" ghost*/}
+        {/*            onClick={ () => {*/}
+        {/*        showDrawer()*/}
+        {/*        getValueNewRow()*/}
+        {/*    }}>Добавить</Button>*/}
+
+        {/*</Space>*/}
         <Table columns={columns}
                dataSource={rows}
                bordered
