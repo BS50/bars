@@ -1,3 +1,5 @@
+import React from "react";
+import {DatePicker} from "antd";
 
 export interface DataType {
     key: string;
@@ -12,3 +14,5 @@ export interface INumeralRow {
     title?: string;
     id?: string
 }
+
+export type RangeValue = Parameters<NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>>[0]

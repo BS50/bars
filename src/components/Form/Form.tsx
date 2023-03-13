@@ -121,7 +121,6 @@ const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinish
                 label="Список"
                 name="list"
                 rules={[{required: true, validator: (rule,value) => {
-                        console.log(currentListNumeralRow)
                     value = currentListNumeralRow.length
                     if (value) {
                         return Promise.resolve();

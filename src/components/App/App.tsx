@@ -18,7 +18,8 @@ import {
 } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import type { DatePickerProps } from 'antd';
-import dayjs from 'dayjs';
+import type {RangeValue} from "../../interfaces/interfaces"
+import dayjs, {Dayjs} from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {ColumnsType} from "antd/es/table";
 import {DataType, INumeralRow} from "../../interfaces/interfaces";
@@ -27,17 +28,16 @@ import {titleDrawer} from "../../constants/constants";
 
 
 
-dayjs.extend(customParseFormat);
-const { RangePicker } = DatePicker;
-const dateFormat = 'DD.MM.YYYY';
-const customFormat: DatePickerProps['format'] = (value) =>
-    `${value.format(dateFormat)}`;
-
-
 const App: FC = () => {
 
     const { confirm } = Modal;
 
+
+    dayjs.extend(customParseFormat);
+    const { RangePicker } = DatePicker;
+    const dateFormat = 'DD.MM.YYYY';
+    const customFormat: DatePickerProps['format'] = (value) =>
+        `${value.format(dateFormat)}`;
 
 
 
@@ -76,7 +76,6 @@ const App: FC = () => {
             title: 'Название',
             dataIndex: 'name',
             key: 'name',
-            // render: (text) => <a>{text}</a>,
         },
         {
             title: 'Дата',
@@ -193,24 +192,18 @@ const App: FC = () => {
     };
 
 
-    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-        console.log(date, dateString);
+
+    const getIntervalDates = (
+        dates: RangeValue, dateStrings: string[]) =>
+    {
+        console.log(dates, dateStrings);
     };
 
-    const dates = [
-        {
-            title: 'два',
-            delete: 'Удалить'
-        },
-        {
-            title: 'пять',
-            delete: 'Удалить'
-        },
-        {
-            title: 'семь',
-            delete: 'Удалить'
-        }
-    ];
+
+
+
+
+
 
 
 
@@ -272,6 +265,9 @@ const App: FC = () => {
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
+
+
+
     return (
     <div className="page">
         <Space direction="horizontal" className="search" wrap={true}>
@@ -281,6 +277,7 @@ const App: FC = () => {
             />
             <p>Дата:</p>
             <RangePicker
+                onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}
                 // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
                 format={customFormat}
             />
