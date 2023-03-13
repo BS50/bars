@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import {INumeralRow} from "../../interfaces/interfaces";
 import {nanoid} from "nanoid";
+import {numerals} from "../../constants/constants";
 
 dayjs.extend(customParseFormat);
 const dateFormat = 'DD.MM.YYYY';
@@ -12,64 +13,65 @@ const dateFormat = 'DD.MM.YYYY';
 
 
 // @ts-ignore
-const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinishFailed, onFinish, addListNumeralRow, deleteListNumeralRow }) => {
+const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinishFailed, onFinish, addListNumeralRow, deleteListNumeralRow, getCurrentListNumerals }) => {
 
 
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [listSelectableNumerals, setListSelectableNumerals] = useState(
-        [
-            {id: '1', title: 'раз'},
-            {id: '2', title: 'два'},
-            {id: '3', title: 'три'},
-            {id: '4', title: 'четыре'},
-            {id: '5', title: 'пять'},
-            {id: '6', title: 'шесть'},
-            {id: '7', title: 'семь'},
-            {id: '8', title: 'восемь'},
-            {id: '9', title: 'девять'},
-            {id: '10', title: 'десять'},
-        ]
-    )
+    const [listSelectableNumerals, setListSelectableNumerals] = useState([])
 
     const showModal = () => {
-        const currentListSelectNumerals = listSelectableNumerals.filter((item) => {
+        const currentListSelectNumerals = numerals.filter((item) => {
+            // @ts-ignore
             if (!(currentListNumeralRow.some((elem:INumeralRow) => elem.title === item.title))) {
                 return item
             }
         })
+        // @ts-ignore
         setListSelectableNumerals(currentListSelectNumerals)
-        setIsModalOpen(true);
     };
 
-    const addNumberCurrentList = (event:any) => {
-        setListSelectableNumerals(listSelectableNumerals.filter(item => item.id !== event.target.id))
-        listSelectableNumerals.forEach((item) => {
-            if (item.id === event.target.id) {
-                addListNumeralRow(item)
+    const closeModal = () => {
+        const currentListNumerals = numerals.filter((item) => {
+            // @ts-ignore
+            if (!(listSelectableNumerals.some((elem) => elem.title === item.title))) {
+                return item
             }
         })
+        getCurrentListNumerals(currentListNumerals)
+    }
+
+    const addNumberCurrentList = (event:any) => {
+        // @ts-ignore
+        setListSelectableNumerals(listSelectableNumerals.filter(item => item.id !== event.target.id))
+        // listSelectableNumerals.forEach((item) => {
+        //     if (item.id === event.target.id) {
+        //         addListNumeralRow(item)
+        //     }
+        // })
     }
 
     const removeNumberCurrentList = (event:any) => {
-        currentListNumeralRow.forEach((item:any) => {
-            if (item.id === event.target.id) {
-                setListSelectableNumerals((oldData) => {
-                    return [...oldData, item]
-                })
-            }
-        })
+        // currentListNumeralRow.forEach((item:any) => {
+        //     if (item.id === event.target.id) {
+        //         setListSelectableNumerals((oldData) => {
+        //             return [...oldData, item]
+        //         })
+        //     }
+        // })
         deleteListNumeralRow(event)
     }
 
 
     const handleOk = () => {
-        setIsModalOpen(false);
+        showModal()
+        setIsModalOpen(true);
     };
 
     const handleCancel = () => {
+        closeModal()
         setIsModalOpen(false);
     };
 
@@ -90,7 +92,7 @@ const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinish
             // initialValues={{ remember: false }}
             initialValues={currentDate}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
+            // onFinishFailed={onFinishFailed}
             autoComplete="off"
             className="form"
             // fields={[{ name: "name", value: currentRowName }]}
@@ -118,11 +120,13 @@ const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinish
             <Form.Item
                 label="Список"
                 name="list"
-                rules={[{required: true, message: 'Добавьте число', validator: (_,value) => {
-                    if (currentListNumeralRow.length) {
+                rules={[{required: true, validator: (rule,value) => {
+                        console.log(currentListNumeralRow)
+                    value = currentListNumeralRow.length
+                    if (value) {
                         return Promise.resolve();
                     } else {
-                        return Promise.reject('Error!');
+                        return Promise.reject('Добавьте число');
                     }
                     }}]}
                 className="form__item"
@@ -165,7 +169,7 @@ const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinish
             <Button
                 type="primary"
                 ghost
-                onClick={showModal}
+                onClick={handleOk}
                 className="form__add-button"
                 disabled={currentListNumeralRow.length === 10 && true}>Добавить
             </Button>
@@ -200,8 +204,6 @@ const _Form = ({ currentListNumeralRow, currentRowName, currentRowDate, onFinish
                         </List.Item>
                     )}
                 />
-
-
 
                 <Button type="primary" ghost onClick={handleCancel} className="form__add-button">
                     Закрыть

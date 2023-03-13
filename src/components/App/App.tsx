@@ -162,11 +162,13 @@ const App: FC = () => {
        setCurrentListNumeralRow(
            currentListNumeralRow.filter(item => item.id !== event.target.id)
        )
-
-
-
-
     }
+
+    const getCurrentListNumerals = (list:[]) => {
+        setCurrentListNumeralRow(list)
+    }
+
+
 
     const convertData = (date: string):string => {
         let dateList = date.split('.')
@@ -306,6 +308,7 @@ const App: FC = () => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 deleteListNumeralRow={deleteListNumeralRow}
+                getCurrentListNumerals={getCurrentListNumerals}
             />
 
 
