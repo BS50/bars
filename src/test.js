@@ -3,7 +3,7 @@
 
 
 
-import dayjs from "dayjs";
+
 
 const convertData = (date) => {
     let dateList = date.split('.')
@@ -49,5 +49,25 @@ const c = a.filter((obj) => {
 //     }
 // })
 
-const date = new Date()
-console.log(date)
+const convertFormatData = (date) => {
+    let dateList = date.split('.')
+    dateList = [dateList[1], dateList[0], dateList[2]]
+    return dateList.join('/')
+}
+
+const date = '01.03.2023'
+const dateNew = convertFormatData(date)
+console.log(new Date(dateNew).getTime())
+
+
+// const millisecond1 = event.dateRange[0].$d.getTime();
+// const millisecond2 = event.dateRange[1].$d.getTime();
+
+// 1677665121764 1682849121764
+
+// SimpleDateFormat template = new Date("yyyy/MM/dd")
+//
+// const answer = template.parse(date)
+// console.log(answer)
+const ab = ['Привет', 'камень', 'кукуруза']
+// console.log(ab[0].toLowerCase().includes('РИВ'.toLowerCase()))

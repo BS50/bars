@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {nanoid} from "nanoid";
 import './App.css'
 import {
@@ -40,12 +40,14 @@ const App: FC = () => {
         `${value.format(dateFormat)}`;
 
 
+    const [form] = Form.useForm();
 
     const [currentRowName, setCurrentRowName] = useState('')
     const [currentRowDate, setCurrentRowDate] = useState('')
     const [currentListNumeralRow, setCurrentListNumeralRow] = useState<INumeralRow[]>([])
     const [keyEditableRow, setKeyEditableRow] = useState('')
 
+    const [initialRows, setInitialRows] = useState<DataType[]>([])
     const [rows, setRows] = useState<DataType[]>(
         [
             {
@@ -123,7 +125,12 @@ const App: FC = () => {
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-                setRows(rows.filter(item => item.key !== rowItem.key))
+                if (initialRows.length) {
+                    setRows(rows.filter(item => item.key !== rowItem.key))
+                    setInitialRows(initialRows.filter(item => item.key !== rowItem.key))
+                } else {
+                    setRows(rows.filter(item => item.key !== rowItem.key))
+                }
             },
             // onCancel() {
             //     console.log('Cancel');
@@ -143,7 +150,7 @@ const App: FC = () => {
             listNumeral.push(objNumbers)
         })
         setCurrentRowName(rowItem.name)
-        setCurrentRowDate(convertData(rowItem.date))
+        setCurrentRowDate(convertFormatData(rowItem.date))
         setCurrentListNumeralRow(listNumeral)
 
         setKeyEditableRow(rowItem.key)
@@ -169,10 +176,10 @@ const App: FC = () => {
 
 
 
-    const convertData = (date: string):string => {
+    const convertFormatData = (date: string):string => {
         let dateList = date.split('.')
         dateList = [dateList[1], dateList[0], dateList[2]]
-        return dateList.join('.')
+        return dateList.join('/')
     }
 
     const getValueNewRow = () => {
@@ -192,16 +199,12 @@ const App: FC = () => {
     };
 
 
-
-    const getIntervalDates = (
-        dates: RangeValue, dateStrings: string[]) =>
-    {
-        console.log(dates, dateStrings);
-    };
-
-
-
-
+    //
+    // const getIntervalDates = (
+    //     dates: RangeValue, dateStrings: string[]) =>
+    // {
+    //     console.log(dates, dateStrings);
+    // };
 
 
 
@@ -267,11 +270,33 @@ const App: FC = () => {
     };
 
     const onSearch = (event: any) => {
-        console.log(event)
+        const searchSubstring = event.name;
+        const fromInterval = Date.parse(event.dateRange[0].$d.toDateString());
+        const toInterval = Date.parse(event.dateRange[1].$d.toDateString());
+
+        const sortRows = rows.filter((row) => {
+            const dateRow = new Date(convertFormatData(row.date)).getTime()
+
+            const searchString = row.name.toLowerCase().includes(searchSubstring.toLowerCase());
+
+            const searchInterval = dateRow >= fromInterval && dateRow <= toInterval
+
+            if (searchString && searchInterval) {
+                return row
+            }
+        })
+        setInitialRows(rows)
+        setRows(sortRows)
+    }
+
+    const clearSearch = () => {
+        if (initialRows.length) {
+            setRows(initialRows)
+        }
+        form.resetFields()
     }
 
 
-    const [form] = Form.useForm();
 
     return (
     <div className="page">
@@ -307,7 +332,7 @@ const App: FC = () => {
                 style={{width: "35%"}}
             >
                 <RangePicker
-                    onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}
+                    // onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}
                     // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
                     format={customFormat}
                     style={{width: "125%"}}
@@ -327,7 +352,7 @@ const App: FC = () => {
                 labelCol={{ span: 10 }}
                 wrapperCol={{ span: 15, offset: 1 }}
             >
-                <Button type="primary" ghost onClick={() => form.resetFields()}>
+                <Button type="primary" ghost onClick={clearSearch}>
                     Очистить
                 </Button>
 
@@ -339,28 +364,6 @@ const App: FC = () => {
                     getValueNewRow()
                 }}>Добавить</Button>
 
-
-
-        {/*<Space direction="horizontal" className="search" wrap={true}>*/}
-        {/*    <p>Название:</p>*/}
-        {/*    <Input*/}
-        {/*        className="search__input"*/}
-        {/*    />*/}
-        {/*    <p>Дата:</p>*/}
-        {/*    <RangePicker*/}
-        {/*        onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}*/}
-        {/*        // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}*/}
-        {/*        format={customFormat}*/}
-        {/*    />*/}
-        {/*    <Button type="primary">Найти</Button>*/}
-        {/*    <Button type="primary" ghost>Очистить</Button>*/}
-        {/*    <Button type="primary" ghost*/}
-        {/*            onClick={ () => {*/}
-        {/*        showDrawer()*/}
-        {/*        getValueNewRow()*/}
-        {/*    }}>Добавить</Button>*/}
-
-        {/*</Space>*/}
         <Table columns={columns}
                dataSource={rows}
                bordered
