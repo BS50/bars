@@ -1,0 +1,6 @@
+version: '3'
+services:
+  bars-app:
+    image: bars-app
+    ports:
+      - 80:80

@@ -1,46 +1,33 @@
-# Getting Started with Create React App
+### Приложение по добавлению, удалению, редактированию и поиску карточек:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Данное приложение разработано согласно тестового задания. В приложении реализован функционал по добавлению, удалению, редактированию и поиску карточек. Поиск осуществляется при введении подстроки  
+названия карточки в форму поиска, при этом регистр букв значения не имеет. Приложение сверстано под разрешение экрана 1280х768, так как на нем его пропорции наиболее приближены к макету в ТЗ.  
+В связи с малым размером приложения, а также небольшим количеством и вложенностью компонентов было принято решение в ходе работы не использовать библиотеки хранения состояний такие как  Redux  
+и MobiX, а ограничиться базовыми инструментами React по изменению state.
 
-## Available Scripts
+### В данном проекте применены следующие технологии:
+* Проект построен на библиотеке React c использованием функционального подхода
+* AntDesign
+* Проект написан на языке TypeScript
+* Верстка отдельных элементов
+* Применена трансформация отдельных элементов
+* При верстке приложения применена методология БЭМ
 
-In the project directory, you can run:
+### Запуск приложения:
+Возможно два варианта запуска приложения в зависимости использования Docker (команды набираются без ковычек)
+1. **Без** Docker
+* Уcтановить на компьютер серверную среду [Node.js](https://nodejs.dev/en/download)
+* Скопировать проект
+* Командой "npm install" установить все зависимости
+* Командой "npm run start" запустить приложение
 
-### `npm start`
+2. **Если используете** Docker _(предпочтительный способ)_
+* Скопировать проект
+* Командой "npm install" установить все зависимости
+* Командой "docker build -t bars-app ." собрать приложение
+* Командой docker-compose up запустить приложение в контейнере Docker
+* После того как контейнер запустится, приложение будет доступно на 80-м порту по [ссылке](http://localhost:80)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### С функционалом приложения можно ознакомиться по [ссылке](https://bs50.github.io/bars/) (если с телефона, то перевести его в горизонтальный режим, т.к. приложение сверстано по-быстрому без адаптации под различные разрешеиния экранов)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Репозиторий [здесь](https://github.com/bs50/bars)

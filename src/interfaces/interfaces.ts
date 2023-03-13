@@ -1,5 +1,4 @@
 import React from "react";
-import {DatePicker} from "antd";
 
 export interface DataType {
     key: string;
@@ -40,8 +39,6 @@ export interface IEventSearch {
     dateRange: [IDate, IDate]
     name: string
 }
-
-export type RangeValue = Parameters<NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>>[0]
 
 export interface DrawerFormProps {
     currentListNumeralRow: INumeralRow[],

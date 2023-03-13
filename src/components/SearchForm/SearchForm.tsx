@@ -42,8 +42,6 @@ const SearchForm: FC <MainFormProps> = ({onSearch, clearSearch, form}) => {
                 style={{width: "35%"}}
             >
                 <RangePicker
-                    // onChange={(dates, dateStrings) => getIntervalDates(dates, dateStrings)}
-                    // defaultValue={[dayjs('01.03.2023', dateFormat), dayjs('01.03.2023', dateFormat)]}
                     format={customFormat}
                     style={{width: "125%"}}
                 />
