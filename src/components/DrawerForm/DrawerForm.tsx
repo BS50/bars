@@ -20,10 +20,7 @@ const DrawerForm: FC <DrawerFormProps> = (
     dayjs.extend(customParseFormat);
     const dateFormat = 'DD.MM.YYYY';
 
-
-
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
     const [listSelectableNumerals, setListSelectableNumerals] = useState<INumeralRow[]>([])
 
     const drawListSelectNumerals = () => {
@@ -76,21 +73,16 @@ const DrawerForm: FC <DrawerFormProps> = (
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             layout="vertical"
-            // initialValues={{ remember: false }}
             initialValues={currentDate}
             onFinish={saveDrawerForm}
-            // onFinishFailed={onFinishFailed}
             autoComplete="off"
             className="form"
-            // fields={[{ name: "name", value: currentRowName }]}
-
         >
             <Form.Item
                 label="Название"
                 name="name"
                 rules={[{ required: true, message: 'Введите название строки' }]}
                 className="form__item"
-
             >
                 <Input className="form__input"/>
             </Form.Item>
@@ -114,7 +106,6 @@ const DrawerForm: FC <DrawerFormProps> = (
                     }
                     }}]}
                 className="form__item"
-
             >
                 <List
                     dataSource={currentListNumeralRow}

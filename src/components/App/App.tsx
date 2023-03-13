@@ -5,9 +5,10 @@ import {Button, Drawer, Table, Form, Modal} from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import {ColumnsType} from "antd/es/table";
 import {DataType, IEventForm, IEventSearch, INumeralRow} from "../../interfaces/interfaces";
-import DrawerForm from "../DrawerForm/DrawerForm";
 import {titleDrawer} from "../../constants/constants";
 import SearchForm from "../SearchForm/SearchForm";
+import DrawerForm from "../DrawerForm/DrawerForm";
+
 
 const App: FC = () => {
 
@@ -117,7 +118,6 @@ const App: FC = () => {
 
    const deleteListNumeralRow = (event: React.MouseEvent<HTMLButtonElement>) => {
        const target = event.target as HTMLButtonElement;
-        // event.stopPropagation();
         event.preventDefault();
        setCurrentListNumeralRow(
            currentListNumeralRow.filter(item => item.id !== target.id)

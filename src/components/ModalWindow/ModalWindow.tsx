@@ -14,14 +14,12 @@ const ModalWindow: FC <ModalProps> = ({ listSelectableNumerals, isModalOpen, ope
                     <List.Item
                         style={{padding:0, paddingBottom: 10}}
                     >
-
                         <Card size={"small"} className="card card_form">
                             <div className={"card__content"}>
                                 <p className={"card__paragraph"}>{item.title}</p>
                                 <button className={"select-button"} id={item.id} onClick={(event) => addNumberCurrentList(event)}>Выбрать</button>
                             </div>
                         </Card>
-
                     </List.Item>
                 )}
             />
